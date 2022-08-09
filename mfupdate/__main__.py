@@ -6,7 +6,7 @@ from mfupdate.data import MFData
 from mfupdate.fetcher import MFFetcher
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 if __name__ == "__main__":
