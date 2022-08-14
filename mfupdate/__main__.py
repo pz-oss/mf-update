@@ -13,6 +13,8 @@ if __name__ == "__main__":
 
     logging.info("start fetcher")
     fetcher = MFFetcher(url=os.environ["MF_BASE_URL"])
+    fetcher.update()
+
     data = MFData(fetcher)
 
     logger.debug(data.total)

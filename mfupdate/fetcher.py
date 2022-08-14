@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class MFFetcher:
+    """MFからデータを取得し、リストのリストに変換します"""
+
     headers = {}
     cookies = {"_moneybook_session": os.environ.get("MF_SESSION")}
     token = None
@@ -26,34 +28,47 @@ class MFFetcher:
 
     def __init__(self, url):
         self.url = url
-        self.bs_url = "{url}/bs/portfolio".format(url=url)
+        self.bs_url = f"{url}/bs/portfolio"
+        self._login()
 
     def _login(self):
-        r = requests.get(self.url, cookies=self.cookies)
-        self.top_html = lxml.html.fromstring(r.text)
+        """
+        > ログインページに GET リクエストを送信し、HTML を解析し、CSRF トークンを抽出します
+        """
+        response = requests.get(self.url, cookies=self.cookies)
+        self.top_html = lxml.html.fromstring(response.text)
         self.token = str(self.top_html.xpath("//meta[@name='csrf-token']/@content")[0])
 
-        logger.debug(f"login token is {self.token}")
+        logger.debug("login token is %s", self.token)
 
         assert self.token is not None
 
     @lru_cache
     def _get_bs_raw(self):
-        r = requests.get(self.bs_url, cookies=self.cookies)
-        bs = lxml.html.fromstring(r.text)
-        return bs
+        """
+        URL を受け取り、その URL にリクエストを送信し、レスポンスを BeautifulSoup オブジェクトとして返します。
+        :return: ページ上のすべてのリンクのリスト。
+        """
+        response = requests.get(self.bs_url, cookies=self.cookies)
+        element = lxml.html.fromstring(response.text)
+        return element
 
     def convert_table_to_array(self, map_table_name):
+        """
+        この関数はテーブル名を入力として取り、テーブルの内容の 2D 配列を返します
+
+        :param map_table_name: 配列に変換するテーブルの名前。
+        """
         try:
-            eq = self._get_bs_raw().xpath(self.map_table[map_table_name])[0]
+            table = self._get_bs_raw().xpath(self.map_table[map_table_name])[0]
             return [
                 [col.text_content().strip() for col in row]
-                for row in eq.findall(".//tr")
+                for row in table.findall(".//tr")
             ]
-        except:
-            return
+        except IndexError:
+            return [[]]
 
-    def _set_update(self):
+    def update(self):
         """更新対象を抽出し、更新を実施する"""
         link = self.top_html.xpath("//*[text()='更新']/@href")
         link = list(map(lambda x: self.url + x, link))  # urlを付与
@@ -66,12 +81,9 @@ class MFFetcher:
             url (str): 更新するための絶対URL
         """
 
-        r = requests.post(
+        response = requests.post(
             url,
             cookies=self.cookies,
             headers={"X-Requested-With": "XMLHttpRequest", "X-CSRF-Token": self.token},
         )
-        assert r.status_code == 200
-
-    def get_token(self):
-        pass
+        assert response.status_code == 200
