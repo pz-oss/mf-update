@@ -62,11 +62,21 @@ class MFFetcher:
         try:
             table = self._get_bs_raw().xpath(self.map_table[map_table_name])[0]
             return [
-                [col.text_content().strip() for col in row]
+                [self._clean_text(col.text_content()) for col in row]
                 for row in table.findall(".//tr")
             ]
         except IndexError:
             return [[]]
+
+    def _clean_text(self, text):
+        """
+        この関数はテキストを入力として受け取り、カンマや単位（円）を取り除き、数値を返します。
+        :param text: 数値を含むテキスト。
+        """
+        try:
+            return float(text.replace(",", "").replace("円", ""))
+        except ValueError:
+            return text.strip()
 
     def update(self):
         """更新対象を抽出し、更新を実施する"""
