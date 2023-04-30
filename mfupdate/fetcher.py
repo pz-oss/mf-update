@@ -35,7 +35,7 @@ class MFFetcher:
         """
         > ログインページに GET リクエストを送信し、HTML を解析し、CSRF トークンを抽出します
         """
-        response = requests.get(self.url, cookies=self.cookies)
+        response = requests.get(self.url, cookies=self.cookies, headers=self.headers)
         self.top_html = lxml.html.fromstring(response.text)
         self.token = str(self.top_html.xpath("//meta[@name='csrf-token']/@content")[0])
 
@@ -95,6 +95,6 @@ class MFFetcher:
         response = requests.post(
             url,
             cookies=self.cookies,
-            headers={"X-Requested-With": "XMLHttpRequest", "X-CSRF-Token": self.token},
+            headers=dict(self.headers,**{"X-Requested-With": "XMLHttpRequest", "X-CSRF-Token": self.token}),
         )
         assert response.status_code == 200
