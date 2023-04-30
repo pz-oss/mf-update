@@ -41,3 +41,4 @@ jobs:
         MF_SPREADSHEET_KEY: ${{secrets.MF_SPREADSHEET_KEY}}
         MF_SESSION: ${{secrets.MF_SESSION}}
         MF_BASE_URL: ${{secrets.MF_BASE_URL}}
+        PYTHONUNBUFFERED: "1"

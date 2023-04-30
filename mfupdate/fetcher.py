@@ -82,6 +82,7 @@ class MFFetcher:
         """更新対象を抽出し、更新を実施する"""
         link = self.top_html.xpath("//*[text()='更新']/@href")
         link = list(map(lambda x: self.url + x, link))  # urlを付与
+        assert len(link) > 0
         list(map(self._post_reload, link))
 
     def _post_reload(self, url: str):
