@@ -41,7 +41,7 @@ class MFFetcher:
 
         logger.debug("login token is %s", self.token)
 
-        assert self.token is not None
+        assert len(self.token) > 0
 
     @lru_cache
     def _get_bs_raw(self):
