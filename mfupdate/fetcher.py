@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class MFFetcher:
     """MFからデータを取得し、リストのリストに変換します"""
 
-    headers = {}
+    headers = {"User-Agent": 'Mozilla/5.0'}
     cookies = {"_moneybook_session": os.environ.get("MF_SESSION")}
     token = None
     map_table = {
