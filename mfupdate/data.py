@@ -1,10 +1,15 @@
-from .fetcher import MFFetcher
+from .fetcher import (
+    MFFetcher,
+)
 
 
 class MFData:
     """資産のデータを含むクラスです"""
 
-    def __init__(self, fetcher: MFFetcher) -> None:
+    def __init__(
+        self,
+        fetcher: MFFetcher,
+    ) -> None:
         """
         `__init__` は、クラスのインスタンスが作成されるときに呼び出される特別なメソッドです
 

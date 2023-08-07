@@ -1,7 +1,9 @@
 import os
 
 import gspread
-from google.oauth2.service_account import Credentials
+from google.oauth2.service_account import (
+    Credentials,
+)
 
 SA_FILE = os.environ["MF_SA_FILE"]
 SPREADSHEET_KEY = os.environ["MF_SPREADSHEET_KEY"]
@@ -10,7 +12,9 @@ SPREADSHEET_KEY = os.environ["MF_SPREADSHEET_KEY"]
 class GSpreadsheetService:
     """リストのリストを使用して Google スプレッドシートを簡単に更新できる gspread ライブラリのラッパーです。"""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+    ) -> None:
         # お決まりの文句
         # 2つのAPIを記述しないとリフレッシュトークンを3600秒毎に発行し続けなければならない
         scope = [
@@ -19,7 +23,10 @@ class GSpreadsheetService:
         ]
 
         # ダウンロードしたjsonファイル名をクレデンシャル変数に設定。
-        credentials = Credentials.from_service_account_file(SA_FILE, scopes=scope)
+        credentials = Credentials.from_service_account_file(
+            SA_FILE,
+            scopes=scope,
+        )
 
         # OAuth2の資格情報を使用してGoogle APIにログイン。
         self.gclient = gspread.authorize(credentials)
@@ -42,9 +49,21 @@ class GSpreadsheetService:
             # シートを開く
             return workbook.worksheet(name)
 
-        return workbook.add_worksheet(name, rows=100, cols=20)
+        return workbook.add_worksheet(
+            name,
+            rows=100,
+            cols=20,
+        )
 
-    def update(self, name, row, col, values, clear=False, **kwargs):
+    def update(
+        self,
+        name,
+        row,
+        col,
+        values,
+        clear=False,
+        **kwargs,
+    ):
         """
         リストのリストを受け取り、それを Google スプレッドシートに書き込みます
 
@@ -56,11 +75,15 @@ class GSpreadsheetService:
         :return: リストのリスト。
         """
         cell1 = gspread.utils.rowcol_to_a1(row, col)
-        cell2 = gspread.utils.rowcol_to_a1(row + len(values), col + len(values[0]))
+        cell2 = gspread.utils.rowcol_to_a1(
+            row + len(values),
+            col + len(values[0]),
+        )
         sheet = self.worksheet(name)
         if clear:
             sheet.clear()
-        return sheet.update(f"{cell1}:{cell2}", values, **kwargs)
-
-
-# GSpreadsheetService().worksheet('mfupdate_total')
+        return sheet.update(
+            f"{cell1}:{cell2}",
+            values,
+            **kwargs,
+        )
