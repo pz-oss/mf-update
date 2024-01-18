@@ -1,6 +1,8 @@
 import os
 
 import gspread
+from retry import retry
+
 from google.oauth2.service_account import (
     Credentials,
 )
@@ -12,6 +14,7 @@ SPREADSHEET_KEY = os.environ["MF_SPREADSHEET_KEY"]
 class GSpreadsheetService:
     """リストのリストを使用して Google スプレッドシートを簡単に更新できる gspread ライブラリのラッパーです。"""
 
+    @retry()
     def __init__(
         self,
     ) -> None:
@@ -55,6 +58,7 @@ class GSpreadsheetService:
             cols=20,
         )
 
+    @retry()
     def update(
         self,
         name,
