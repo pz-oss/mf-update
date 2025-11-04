@@ -2,6 +2,8 @@
 
 # mf update
 
+2025/11/04
+
 ## Excel
 
 1. GCPでAPI有効化
