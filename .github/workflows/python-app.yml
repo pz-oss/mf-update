@@ -2,7 +2,7 @@ name: Python application
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '* * * * */5'
   push:
     branches:
       - main
@@ -32,6 +32,8 @@ jobs:
         echo "${{secrets.MF_SA_FILE}}" | base64 -d > sa.json
     - name: Test
       run: |
+        poetry run python -m mfupdate
+        sleep 60
         poetry run python -m mfupdate
       env:
         MF_SA_FILE: sa.json
