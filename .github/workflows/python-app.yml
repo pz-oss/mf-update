@@ -32,10 +32,10 @@ jobs:
         echo "${{secrets.MF_SA_FILE}}" | base64 -d > sa.json
     - name: Test
       run: |
-        for i in {1..30}; do
+        for i in {1..13}; do
           poetry run python -m mfupdate
           if [ $i -lt 30 ]; then
-            sleep 20
+            sleep 60
           fi
         done
       env:
