@@ -32,9 +32,12 @@ jobs:
         echo "${{secrets.MF_SA_FILE}}" | base64 -d > sa.json
     - name: Test
       run: |
-        poetry run python -m mfupdate
-        sleep 60
-        poetry run python -m mfupdate
+        for i in {1..30}; do
+          poetry run python -m mfupdate
+          if [ $i -lt 30 ]; then
+            sleep 20
+          fi
+        done
       env:
         MF_SA_FILE: sa.json
         MF_SPREADSHEET_KEY: ${{secrets.MF_SPREADSHEET_KEY}}
