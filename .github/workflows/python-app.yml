@@ -34,7 +34,7 @@ jobs:
       run: |
         for i in {1..13}; do
           poetry run python -m mfupdate
-          if [ $i -lt 30 ]; then
+          if [ $i -lt 13 ]; then
             sleep 60
           fi
         done
